@@ -42,6 +42,7 @@
 				zoom: options.zoom,
 				center: mapLatLng,
 				mapTypeId:mapTypeDisplay
+				
 			}
 			var map = new google.maps.Map(obj,mapOptions);
 			if(options.address){
@@ -65,6 +66,19 @@
 						defaults.onGeocodeError.call(this);
 					}
 				});
+			} else {
+				if(options.icon){
+					var marker = new google.maps.Marker({
+						map: map, 
+						position: mapLatLng,
+						icon:options.icon
+					})
+				} else {
+					var marker = new google.maps.Marker({
+						map: map, 
+						position: mapLatLng
+					});
+				}
 			}
 		});
 	}
