@@ -10,7 +10,8 @@
 	$.fn.googleMap = function(options) {
 		var defaults = {
 			address: false,
-			LatLng: [[0, 0]],			
+			LatLng: [[0, 0]],
+			content: false,
 			zoom: 8, //higher number means zoom in further
 			icon: false,
 			alt: false,
@@ -56,6 +57,14 @@
 							position: results[0].geometry.location,
 							icon: (options.icon)?(options.icon):(null)
 						});
+						if (options.content != false) {
+							var info = new google.maps.InfoWindow({
+								content: options.content
+							});
+							google.maps.event.addListener(marker, 'click', function() {
+								info.open(map, marker);
+							});
+						}
 					} else if(status === google.maps.GeocoderStatus.ZERO_RESULTS) {
 						options.onGeocodeError.call(this);
 					}
