@@ -1,0 +1,37 @@
+{
+	"initialset" : "set1",
+	"sets" : [
+		{
+			"setid" : "set1",
+			"bounds" : null,
+			"points" : [
+				{
+					"latlng" : [-33.8394,151.207],
+					"content" : "101 Miller Street, Level <br />North Sydney, Australia, NSW 2060",
+					"icon" : ""
+				}
+			]
+		},
+		{
+			"setid" : "set2",
+			"bounds" : null,
+			"points" : [
+				{
+					"latlng" : [33.9169,-84.3558],
+					"content" : "Six Concourse Parkway, Suite 1575<br />Atlanta, GA 30328",
+					"icon" : ""
+				},
+				{
+					"latlng" : [42.3551,-71.0565],
+					"content" : "75 Federal Street, 5th Floor<br />Boston, MA 02110",
+					"icon" : ""
+				}
+				,{
+					"latlng" : [35.2,-80.8477],
+					"content" : "Charlotte Plaza<br />201 South College Street, Suite 1565 <br />Charlotte, NC 28244",
+					"icon" : ""
+				}
+			]
+		}
+	]
+}
