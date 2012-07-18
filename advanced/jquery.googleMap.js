@@ -1,6 +1,6 @@
 /**
 * jQuery Google Map Helper
-* Copyright (c) 2011 Kevin Doyle
+* Copyright (c) 2012 Kevin Doyle & Jonathan Hopkins
 * Dual licensed under the MIT and GPL licenses:
 * http://www.opensource.org/licenses/mit-license.php
 * http://www.gnu.org/licenses/gpl.html
