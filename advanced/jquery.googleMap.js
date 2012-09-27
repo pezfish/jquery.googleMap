@@ -64,12 +64,12 @@
 							point.marker = tempMarker;
 							
 							// add info window
-							google.maps.event.addListener(tempMarker, 'click', (function(tempMarker, j) {
+							google.maps.event.addListener(tempMarker, 'click', (function(tempMarker, j, i) {
 								return function() {
-									infowindow.setContent(set.points[j].content);
+									infowindow.setContent(data.sets[i].points[j].content);
 									infowindow.open(map, tempMarker);
 								}
-							})(tempMarker, j));
+							})(tempMarker, j, i));
 							
 							// add marker to map
 							bounds.extend(tempMarker.getPosition());
