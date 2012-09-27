@@ -14,7 +14,7 @@
 		var options = $.extend(defaults, options);
 		return this.each(function() {
 			var obj = $(this)[0],
-				mapTypeDisplay, mapOptions, map, geocoder, bounds, tempLatLng, tempMarker, tempLat, tempLng, initialset, infowindow;
+				mapTypeDisplay, mapOptions, map, bounds, tempLatLng, tempMarker, initialset, infowindow;
 
 			switch(options.mapType){
 				case "roadmap":
@@ -32,12 +32,13 @@
 			}
 			
 			mapOptions = {
-				zoom: 8,
-				center: new google.maps.LatLng(0,0),
+				zoom:8,
+				maxZoom:15,
+				center:new google.maps.LatLng(0,0),
 				mapTypeId:mapTypeDisplay
 			}
 			
-			map = new google.maps.Map(obj,mapOptions);
+			map = new google.maps.Map(obj, mapOptions);
 			infowindow = new google.maps.InfoWindow();
 			
 			$.ajax({
@@ -45,7 +46,7 @@
 				dataType: "json",
   				url: "data.json",
 				success: function(data) {
-					// loop thru sets and determine center and zoomlevel for each set, also add each point to map
+					// loop thru sets and add each point to map with infowindow
 					for (i = 0; i < data.sets.length; i++) {
 						var set = data.sets[i];
 						bounds = new google.maps.LatLngBounds();
@@ -59,6 +60,9 @@
 								icon: null
 							});
 							
+							// store marker for later use
+							point.marker = tempMarker;
+							
 							// add info window
 							google.maps.event.addListener(tempMarker, 'click', (function(tempMarker, j) {
 								return function() {
@@ -66,7 +70,6 @@
 									infowindow.open(map, tempMarker);
 								}
 							})(tempMarker, j));
-							
 							
 							// add marker to map
 							bounds.extend(tempMarker.getPosition());
@@ -77,30 +80,26 @@
 					}
 					
 					// set the bounds to the initial set or the first
+					var curset = "";
 					if (data.initialset !== null) {
 						for (i = 0; i < data.sets.length; i++) {
-							if (data.sets[i].setid === data.initialset) {
-								map.fitBounds(data.sets[i].bounds);
-								setTimeout(function() {map.setZoom(Math.min(map.getZoom(), 15));}, 50);
-								
-								// set link to active
-								$(".set").removeClass("active");
-								$("#" + data.initialset).addClass("active");
-							}
+							if (data.sets[i].setid === data.initialset) curset = data.sets[i];
 						}
+						// if specified initial set is not found, use first set instead
+						if (curset == "") curset = data.sets[0];
 					} else {
-						map.fitBounds(data.sets[0].bounds);
-						setTimeout(function() {map.setZoom(Math.min(map.getZoom(), 15));}, 50);
-						
-						
-						// set link to active
-						$(".set").removeClass("active");
-						$("#" + data.sets[0].setid).addClass("active");
+						curset = data.sets[0];
 					}
+					map.fitBounds(curset.bounds);
 					
-					// add click event to any buttons for sets
-					$(".set").click(function() {
-						curid = $(this).attr("id");	
+					// set link to current
+					$(".goto").removeClass("current");
+					$('a.goto[data-id="' + curset.setid + '"]').addClass("current");
+					
+					
+					// add click event to go to the set
+					$(".goto").click(function() {
+						curid = $(this).data("id");	
 						
 						// loop thru to find id to get bounds
 						for (i = 0; i < data.sets.length; i++) {
@@ -108,11 +107,51 @@
 								map.fitBounds(data.sets[i].bounds);
 								map.setZoom(Math.min(map.getZoom(), 15));
 								
-								// set link to active
-								$(".set").removeClass("active");
-								$(this).addClass("active");
+								// set link to current
+								$(".goto").removeClass("current");
+								$(this).addClass("current");
 							}
 						}
+						
+						return false;
+					});
+					
+					
+					// add click event to go to the set
+					$(".toggle").click(function() {
+						curid = $(this).data("id");	
+						
+						// loop thru to find id to get bounds
+						for (i = 0; i < data.sets.length; i++) {
+							if (data.sets[i].setid === curid) {
+								for (j = 0; j < data.sets[i].points.length; j++) {
+									curmarker = data.sets[i].points[j].marker;
+									if (!curmarker.getVisible()) {
+										curmarker.setVisible(true);
+										$('a.toggle[data-id="' + curid + '"]').removeClass("invisible");
+									} else {
+										curmarker.setVisible(false);
+										$('a.toggle[data-id="' + curid + '"]').addClass("invisible");
+									}
+								}
+							}
+						}
+						
+						return false;
+					});
+					
+					
+					// add submit event to form to goto zip
+					$("#mapaddressform").submit(function() {
+						var geocoder = new google.maps.Geocoder();	
+						geocoder.geocode({'address': $("#mapaddress").val()}, function(results, status) {
+							if (status === google.maps.GeocoderStatus.OK) {
+								map.setCenter(results[0].geometry.location);
+								map.setZoom(14);
+							} else if(status === google.maps.GeocoderStatus.ZERO_RESULTS) {
+								options.onGeocodeError.call(this);
+							}
+						});
 						
 						return false;
 					});
