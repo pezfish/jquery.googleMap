@@ -9,7 +9,8 @@
 (function($) {  
 	$.fn.googleMap = function(options) {
 		var defaults = {
-			mapType: "roadmap"
+			mapType: "roadmap",
+			url: "data.json"
 		}
 		var options = $.extend(defaults, options);
 		return this.each(function() {
@@ -44,7 +45,7 @@
 			$.ajax({
 				type: "GET",
 				dataType: "json",
-  				url: "data.json",
+  				url: options.url,
 				success: function(data) {
 					// loop thru sets and add each point to map with infowindow
 					for (i = 0; i < data.sets.length; i++) {
