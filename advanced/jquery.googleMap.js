@@ -57,8 +57,7 @@
 							tempMarker = new google.maps.Marker({
 								map: map,
 								position: tempLatLng,
-								//icon: (options.icon)?(options.icon):(null)
-								icon: null
+								icon: (set.points[j].icon)?(set.points[j].icon):(null)
 							});
 							
 							// store marker for later use
