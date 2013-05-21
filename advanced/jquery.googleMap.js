@@ -36,7 +36,8 @@
 				zoom:8,
 				maxZoom:15,
 				center:new google.maps.LatLng(0,0),
-				mapTypeId:mapTypeDisplay
+				mapTypeId:mapTypeDisplay,
+				styles:options.styles
 			}
 			
 			map = new google.maps.Map(obj, mapOptions);
